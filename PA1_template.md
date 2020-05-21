@@ -7,7 +7,8 @@ output:
 
 
 ## Loading and preprocessing the data
-```{r}
+
+```r
 if (!file.exists('activity.csv')) {
   unzip(zipfile = "activity.zip")
 }
@@ -16,7 +17,8 @@ activityData <- read.csv(file="activity.csv", header=TRUE)
 ```
 
 ## What is mean total number of steps taken per day?
-```{r}
+
+```r
 # Calculate the total steps taken per day
 totalSteps <- aggregate(steps ~ date, activityData, FUN=sum)
 
@@ -25,18 +27,33 @@ hist(totalSteps$steps,
      main = "Total Steps per Day",
      xlab = "Number of Steps")
 ```
-```{r}
+
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
+
+```r
 # Calculate and report the mean and median of total steps taken per day
 meanSteps <- mean(totalSteps$steps, na.rm = TRUE)
 medSteps <- median(totalSteps$steps, na.rm = TRUE)
 meanSteps
+```
+
+```
+## [1] 10766.19
+```
+
+```r
 medSteps
+```
+
+```
+## [1] 10765
 ```
 
 
 
 ## What is the average daily activity pattern?
-```{r}
+
+```r
 # Make a time-series plot of the 5-minute interval and the average number of
 # steps taken, averaged acoss all days.
 library(ggplot2)
@@ -49,15 +66,24 @@ ggplot(data = meanStepsByInt, aes(x = interval, y = steps)) +
   theme(plot.title = element_text(hjust = 0.5))
 ```
 
-```{r}
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+
+
+```r
 # Which 5-minute interval across all days contain the maximum number of steps
 maxInt <- meanStepsByInt[which.max(meanStepsByInt$steps),]
 maxInt
 ```
 
+```
+##     interval    steps
+## 104      835 206.1698
+```
+
 
 ## Imputing missing values
-```{r}
+
+```r
 # Calculate and report the total number of missing values in the dataset
 missingVals <- is.na(activityData$steps)
 # Create a new dataset that is equal to the original dataset but with 
@@ -75,20 +101,42 @@ hist(impStepsByInt$steps,
      main = "Imputed Number of Steps Per Day",
      xlab = "Number of Steps")
 ```
-```{r}
+
+![](PA1_template_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
+
+```r
 impMeanSteps <- mean(impStepsByInt$steps, na.rm = TRUE)
 impMedSteps <- median(impStepsByInt$steps, na.rm = TRUE)
 diffMean = impMeanSteps - meanSteps
 diffMed = impMedSteps - medSteps
 diffTotal = sum(impStepsByInt$steps) - sum(totalSteps$steps)
 diffMean
+```
+
+```
+## [1] 0
+```
+
+```r
 diffMed
+```
+
+```
+## [1] 1.188679
+```
+
+```r
 diffTotal
+```
+
+```
+## [1] 86129.51
 ```
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
-```{r}
+
+```r
 # Create a new factor variable in the dataset with two levels - "weekend" and "weekday"
 DayType <- function(date) {
   day <- weekdays(date)
@@ -113,4 +161,6 @@ ggplot(data = meanStepsByDay, aes(x = interval, y = steps)) +
   ylab("Average Number of Steps") +
   theme(plot.title = element_text(hjust = 0.5))
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
 
